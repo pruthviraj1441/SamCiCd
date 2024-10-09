@@ -61,6 +61,6 @@ jobs:
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
-          whatsNewDirectory: distribution/whatsnew  # Ensure this directory exists or remove this line
-          mappingFile: app/build/outputs/mapping/release/mapping.txt  # Adjust if needed
-          debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Adjust if needed
+          #whatsNewDirectory: distribution/whatsnew  # Ensure this directory exists or remove this line
+          #mappingFile: app/build/outputs/mapping/release/mapping.txt  # Adjust if needed
+          #debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Adjust if needed
