@@ -17,7 +17,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("D:/cicd/ibkart.jks")
+            storeFile = file("keystore/ibkart.jks")
             storePassword = "ibkart@msspay"
             keyAlias = "ibkart"
             keyPassword = "ibkart@msspay"
