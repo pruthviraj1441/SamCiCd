@@ -24,10 +24,32 @@ jobs:
         run: chmod +x ./gradlew  # Ensure the Gradle wrapper is executable
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew assembleRelease  # Build the release version
 
-      - name: Upload a Build Artifact
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/release/app-release.apk  # Adjusted path for the release APK
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: build  # Ensure the build job completes before uploading
+
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v4
+
+      - name: Upload to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}  # Updated secret name
+          packageName: in.ibkart.agent  # Updated package name
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Adjusted path for AAB
+          track: internal  # Set to internal for internal testing
+          status: inProgress
+          inAppUpdatePriority: 2
+          userFraction: 0.33
+          whatsNewDirectory: distribution/whatsnew  # Path for what's new notes
+          mappingFile: app/build/outputs/mapping/release/mapping.txt  # Path for ProGuard mapping file
+          debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Path for debug symbols
