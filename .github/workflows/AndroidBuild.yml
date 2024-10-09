@@ -20,19 +20,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'  # Using Temurin for JDK
 
-      - name: Create Keystore
-        run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > ibkart.jks
-        env:
-          KEYSTORE_CONTENT: ${{ secrets.KEYSTORE_CONTENT }}
-
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew  # Ensure the Gradle wrapper is executable
+
+      - name: Copy Keystore File
+        run: |
+          echo "${{ secrets.KEYSTORE_CONTENT }}" > ibkart.jks  # Restore the keystore from a secret
 
       - name: Build with Gradle
         run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=ibkart.jks \
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
           -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
-          -Pandroid.injected.signing.key.password=${{ secrets.KEY_ALIAS_PASSWORD }}
+          -Pandroid.injected.signing.key.alias.password=${{ secrets.KEY_ALIAS_PASSWORD }}  # Pass the signing config
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
