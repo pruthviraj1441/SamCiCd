@@ -27,6 +27,9 @@ jobs:
         run: |
           ./gradlew assembleDebug
 
+      - name: List Output Directory
+        run: ls -R app/build/outputs  # List all files to check where the AAB is located
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
