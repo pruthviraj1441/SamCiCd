@@ -12,16 +12,23 @@ android {
         targetSdk = 34
         versionCode = 99
         versionName = "V1.0.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-
+    signingConfigs {
+        create("release") {
+            storeFile = file("D:/jks files/production/ibkart.jks")
+            storePassword = "MY_KEYSTORE_PASSWORD" // Use environment variables for security
+            keyAlias = "MY_KEY_ALIAS" // Your key alias
+            keyPassword = "MY_KEY_ALIAS_PASSWORD" // Use environment variables for security
+        }
+    }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-             proguardFiles(
+            signingConfig = signingConfigs.getByName("release") // Reference the signing config
+            proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
