@@ -24,7 +24,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Decode Keystore File
-        run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > app/keystore/ibkart.jks  # Ensure correct directory
+        run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > keystore/ibkart.jks  # Ensure correct directory
 
       - name: Build with Gradle
         run: ./gradlew assembleRelease
@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: app/release/app-release.aab
 
   upload:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: in.ibkart.agent
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          releaseFiles: app/release/app-release.aab
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
