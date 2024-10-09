@@ -28,10 +28,16 @@ jobs:
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > ibkart.jks
 
       - name: Build with Gradle
-        run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=ibkart.jks \
+        run: |
+          ./gradlew bundleRelease \
+          -Pandroid.injected.signing.store.file=ibkart.jks \
           -Pandroid.injected.signing.store.password=ibkart@msspay \
           -Pandroid.injected.signing.key.alias=ibkart \
           -Pandroid.injected.signing.key.alias.password=ibkart@msspay
+        env:
+          KEYSTORE_PASSWORD: ibkart@msspay
+          KEY_ALIAS: ibkart
+          KEY_ALIAS_PASSWORD: ibkart@msspay
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
