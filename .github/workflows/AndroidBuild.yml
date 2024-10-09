@@ -23,9 +23,6 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      - name: Create Keystore Directory
-        run: mkdir -p app/keystore  # Create the keystore directory if it doesn't exist
-
       - name: Decode Keystore File
         run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > app/keystore/ibkart.jks  # Ensure correct directory
 
