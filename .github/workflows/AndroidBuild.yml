@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4.4.0
         with:
           java-version: '17'
-          distribution: 'temurin'  # Using Temurin for JDK
+          distribution: 'adopt'  # Using AdoptOpenJDK
 
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew  # Ensure the Gradle wrapper is executable
@@ -26,12 +26,17 @@ jobs:
       - name: Decode Keystore File
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > ibkart.jks  # Restore the keystore from a secret
+        env:
+          KEYSTORE_CONTENT: ${{ secrets.KEYSTORE_CONTENT }}  # Ensure the environment variable is set
 
       - name: Build with Gradle
-        run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=ibkart.jks \
-          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
-          -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
-          -Pandroid.injected.signing.key.alias.password=${{ secrets.KEY_ALIAS_PASSWORD }}  # Pass the signing config
+        run: ./gradlew bundleRelease \
+          -Pandroid.injected.signing.store.file="ibkart.jks" \
+          -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
+          -Pandroid.injected.signing.key.alias="${{ secrets.KEY_ALIAS }}" \
+          -Pandroid.injected.signing.key.alias.password="${{ secrets.KEY_ALIAS_PASSWORD }}"  # Pass the signing config
+        env:
+          JAVA_HOME: /opt/hostedtoolcache/Java_AdoptOpenJDK_jdk/17.0.12-7/x64  # Set JAVA_HOME if needed
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
