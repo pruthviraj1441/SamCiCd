@@ -17,11 +17,10 @@ android {
 
     signingConfigs {
         create("release") {
-            // Use a relative path or a secure method to set the keystore file
             storeFile = file("../ibkart_cicd.jks") // Adjust this based on your project structure
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "default_password" // Use environment variable
-            keyAlias = System.getenv("KEY_ALIAS") ?: "default_alias" // Use environment variable
-            keyPassword = System.getenv("KEY_ALIAS_PASSWORD") ?: "default_alias_password" // Use environment variable
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: throw IllegalArgumentException("KEYSTORE_PASSWORD not set") // Use environment variable
+            keyAlias = System.getenv("KEY_ALIAS") ?: throw IllegalArgumentException("KEY_ALIAS not set") // Use environment variable
+            keyPassword = System.getenv("KEY_ALIAS_PASSWORD") ?: throw IllegalArgumentException("KEY_ALIAS_PASSWORD not set") // Use environment variable
         }
     }
 
