@@ -35,8 +35,7 @@ android {
         }
         getByName("debug") {
             isMinifyEnabled = false
-            // Optionally, you can set a different signing config for debug if needed
-        }
+         }
     }
 
     compileOptions {
