@@ -25,7 +25,7 @@ jobs:
 
       - name: Copy Keystore File
         run: |
-          echo "${{ secrets.KEYSTORE_CONTENT }}" > ibkart.jks  # Restore the keystore from a secret
+          echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > ibkart.jks  # Restore the keystore from a secret
 
       - name: Build with Gradle
         run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=ibkart.jks \
