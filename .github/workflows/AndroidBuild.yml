@@ -33,7 +33,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew bundleRelease \
-          -Pandroid.injected.signing.store.file=cicd/ibkart.jks \
+          -Pandroid.injected.signing.store.file=$(pwd)/cicd/ibkart.jks \
           -Pandroid.injected.signing.store.password=ibkart@msspay \
           -Pandroid.injected.signing.key.alias=ibkart \
           -Pandroid.injected.signing.key.alias.password=ibkart@msspay
