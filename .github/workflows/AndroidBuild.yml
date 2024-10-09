@@ -24,13 +24,13 @@ jobs:
         run: chmod +x ./gradlew  # Ensure the Gradle wrapper is executable
 
       - name: Build with Gradle
-        run: ./gradlew assembleRelease  # Build the release version
+        run: ./gradlew bundleRelease  # Build the release version AAB
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: CiCd.apk
-          path: app/build/outputs/apk/release/app-release.apk  # Adjusted path for the release APK
+          name: CiCd.aab
+          path: app/build/outputs/bundle/release/app-release.aab  # Path for the AAB
 
   upload:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}  # Updated secret name
           packageName: in.ibkart.agent  # Updated package name
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Adjusted path for AAB
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Correct path for the AAB
           track: internal  # Set to internal for internal testing
           status: inProgress
           inAppUpdatePriority: 2
