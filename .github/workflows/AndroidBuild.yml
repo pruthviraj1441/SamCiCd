@@ -18,18 +18,21 @@ jobs:
         uses: actions/setup-java@v4.4.0
         with:
           java-version: '17'
-          distribution: 'temurin'
-
-      - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew
+          distribution: 'temurin'  # Using Temurin for JDK
 
       - name: Create Keystore
-        run: echo "${{ secrets.KEYSTORE_CONTENT }}" > ibkart_cicd.jks
+        run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > ibkart.jks
         env:
-          KEYSTORE_CONTENT: ${{ secrets.KEYSTORE_CONTENT }}  # Store your keystore content as a secret
+          KEYSTORE_CONTENT: ${{ secrets.KEYSTORE_CONTENT }}
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew  # Ensure the Gradle wrapper is executable
 
       - name: Build with Gradle
-        run: ./gradlew bundleRelease  # Build the release version AAB
+        run: ./gradlew bundleRelease -Pandroid.injected.signing.store.file=ibkart.jks \
+          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+          -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+          -Pandroid.injected.signing.key.password=${{ secrets.KEY_ALIAS_PASSWORD }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
@@ -39,25 +42,22 @@ jobs:
 
   upload:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build  # Ensure the build job completes before uploading
 
     steps:
-      - name: Checkout
+      - name: Setup repo
         uses: actions/checkout@v4
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}  # Your Play Store JSON secret
-          packageName: in.ibkart.agent  # Your app's package name
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}  # Updated secret name
+          packageName: in.ibkart.agent  # Updated package name
           releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Correct path for the AAB
-          track: internal  # Use internal track for testing
+          track: internal  # Set to internal for internal testing
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
           whatsNewDirectory: distribution/whatsnew  # Path for what's new notes
           mappingFile: app/build/outputs/mapping/release/mapping.txt  # Path for ProGuard mapping file
           debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Path for debug symbols
-
-      - name: Cleanup Keystore
-        run: rm ibkart_cicd.jks  # Clean up the keystore file after the build
