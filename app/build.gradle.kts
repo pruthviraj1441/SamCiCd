@@ -17,17 +17,17 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../ibkart_cicd.jks") // Adjust this based on your project structure
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: throw IllegalArgumentException("KEYSTORE_PASSWORD not set") // Use environment variable
-            keyAlias = System.getenv("KEY_ALIAS") ?: throw IllegalArgumentException("KEY_ALIAS not set") // Use environment variable
-            keyPassword = System.getenv("KEY_ALIAS_PASSWORD") ?: throw IllegalArgumentException("KEY_ALIAS_PASSWORD not set") // Use environment variable
+            storeFile = file("../ibkart_cicd.jks")
+            storePassword = "ibkart@msspay"
+            keyAlias = "ibkart"
+            keyPassword = "ibkart@msspay"
         }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release") // Reference the signing config
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
