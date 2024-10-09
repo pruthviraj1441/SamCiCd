@@ -15,9 +15,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("D:/jks files/cicd/ibkart.jks")
+            storePassword = "ibkart@msspay"
+            keyAlias = "ibkart"
+            keyPassword = "ibkart@msspay"
+        }
+    }
+
     buildTypes {
-        getByName("debug") {
+        getByName("release") {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
