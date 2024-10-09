@@ -53,3 +53,4 @@ jobs:
           whatsNewDirectory: distribution/whatsnew  # Path for what's new notes
           mappingFile: app/build/outputs/mapping/release/mapping.txt  # Path for ProGuard mapping file
           debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Path for debug symbols
+
