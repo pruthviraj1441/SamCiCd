@@ -23,8 +23,13 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
-      - name: Decode Keystore File
-        run: echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > keystore/ibkart.jks  # Ensure correct directory
+      - name: Setup Keystore
+        run: |
+          mkdir -p app/keystore
+          echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > app/keystore/ibkart.jks
+
+      - name: List Keystore Directory
+        run: ls -R app/keystore
 
       - name: Build with Gradle
         run: ./gradlew assembleRelease
