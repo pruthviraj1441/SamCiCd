@@ -24,16 +24,16 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleRelease  # Change to release build
 
       - name: List Output Directory
-        run: ls -R app/  # List all files to check where the AAB is located
+        run: ls -R app/build/outputs
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/debug/app-debug.aab  # Adjusting path to match typical output
+          path: app/build/outputs/bundle/release/app-release.aab  # Adjust for release AAB
 
   upload:
     runs-on: ubuntu-latest
@@ -48,11 +48,11 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: in.ibkart.agent
-          releaseFiles: app/debug/app-debug.aab  # Adjusted path for debug AAB
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Correct path for the release AAB
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
-          whatsNewDirectory: distribution/whatsnew
-          mappingFile: app/build/outputs/mapping/debug/mapping.txt  # Adjusted for debug mapping file
-          debugSymbols: app/intermediates/merged_native_libs/debug/out/lib  # Adjusted for debug symbols
+          whatsNewDirectory: distribution/whatsnew  # Make sure this directory exists or remove this line
+          mappingFile: app/build/outputs/mapping/release/mapping.txt  # Adjust if needed
+          debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Adjust if needed
