@@ -23,7 +23,7 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew  # Ensure the Gradle wrapper is executable
 
-      - name: Copy Keystore File
+      - name: Decode Keystore File
         run: |
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > ibkart.jks  # Restore the keystore from a secret
 
