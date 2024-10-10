@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin'  # Use 'temurin' for the latest
+          distribution: 'temurin'
 
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
@@ -46,7 +46,7 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: List Output Directory
-        run: ls -R app/build/outputs
+        run: ls -R app/build/outputs/bundle/release
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
@@ -62,11 +62,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Create Release Directory
+        run: mkdir -p app/release  # Create the directory if it doesn't exist
+
       - name: Download Build Artifact
         uses: actions/download-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release  # Ensure this matches where you want to store the artifact
+          path: app/release  # Download artifact to app/release
+
+      - name: List Downloaded Artifacts
+        run: ls -R app/release  # Check if the AAB file exists
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
