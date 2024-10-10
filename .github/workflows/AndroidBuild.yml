@@ -31,6 +31,18 @@ jobs:
       - name: List Keystore Directory
         run: ls -R app/keystore
 
+
+      - name: Clean Build
+        run: ./gradlew clean
+
+      - name: Increment Version Code
+        run: |
+            # Increment the version code in build.gradle.kts
+            sed -i 's/versionCode = [0-9]*/versionCode = $(( $(grep 'versionCode' app/build.gradle.kts | grep -o '[0-9]*') + 1 ))/' app/build.gradle.kts
+            # Optionally update the version name
+            sed -i 's/versionName = ".*"/versionName = "V1.0.$(( $(grep 'versionCode' app/build.gradle.kts | grep -o '[0-9]*') + 1 ))"/' app/build.gradle.kts
+
+
       - name: Build with Gradle
         run: ./gradlew assembleRelease
 
