@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release/app-release.aab
+          path: app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: warn
 
   upload:
@@ -62,14 +62,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release/app-release.aab
+          path: app/build/outputs/bundle/release/app-release.aab
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: in.ibkart.agent
-          releaseFiles: app/release/*.aab  # Use wildcard to match the AAB file
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab  # Use wildcard to match the AAB file
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
