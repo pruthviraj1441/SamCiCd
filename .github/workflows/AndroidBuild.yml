@@ -42,22 +42,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleRelease
 
-      - name: List All Output Directories
-        run: ls -R app/build/outputs  # List all output directories
-
-      - name: Create Release Directory
-        run: mkdir -p app/release  # Create the directory if it doesn't exist
-
-      - name: Move AAB to Release Directory
-        run: |
-          # Attempt to find and move the AAB file
-          mv app/build/outputs/bundle/release/app-release.aab app/release/ || echo "First path not found."
-          mv app/build/outputs/bundle/release/outputs/bundle/release/app-release.aab app/release/ || echo "Second path not found."
-          mv app/build/outputs/bundle/release/*.aab app/release/ || echo "AAB file not found."
-
-      - name: List Release Directory
-        run: ls -R app/release  # List the contents of the release directory
-
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -76,7 +60,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release  # Download artifact to app/release
+          path: app/release/app-release.aab  # Download artifact to app/release
 
       - name: List Downloaded Artifacts
         run: ls -R app/release  # Check if the AAB file exists
