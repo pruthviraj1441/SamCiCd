@@ -53,9 +53,8 @@ jobs:
 
       - name: Move AAB to Release Directory
         run: |
-          if [ -f app/build/outputs/bundle/release/app-release.aab ]; then
-            mv app/build/outputs/bundle/release/app-release.aab app/release/
-          elif [ -f app/build/outputs/bundle/release/*.aab ]; then
+          # Attempt to find and move the AAB file
+          if ls app/build/outputs/bundle/release/*.aab 1> /dev/null 2>&1; then
             mv app/build/outputs/bundle/release/*.aab app/release/
           else
             echo "No AAB file found in the expected output directories."
@@ -69,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release/*.aab  # Use wildcard to catch the AAB file
+          path: app/release/*.aab  # Use wildcard to match the AAB file
           if-no-files-found: warn
 
   upload:
