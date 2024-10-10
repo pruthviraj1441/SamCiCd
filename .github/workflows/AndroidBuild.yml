@@ -28,6 +28,9 @@ jobs:
           mkdir -p app/keystore
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > app/keystore/ibkart.jks
 
+      - name: List Keystore Directory
+        run: ls -R app/keystore
+
       - name: Clean Build
         run: ./gradlew clean
 
@@ -42,10 +45,57 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleRelease
 
+      - name: List All Output Directories
+        run: ls -R app/build/outputs  # List all output directories
+
+      - name: Create Release Directory
+        run: mkdir -p app/release  # Create the directory if it doesn't exist
+
+      - name: Move AAB to Release Directory
+        run: |
+          if [ -f app/build/outputs/bundle/release/app-release.aab ]; then
+            mv app/build/outputs/bundle/release/app-release.aab app/release/
+          elif [ -f app/build/outputs/bundle/release/*.aab ]; then
+            mv app/build/outputs/bundle/release/*.aab app/release/
+          else
+            echo "No AAB file found in the expected output directories."
+            exit 1  # Exit with error if no file is found
+          fi
+
+      - name: List Release Directory
+        run: ls -R app/release  # List the contents of the release directory
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release/app-release.aab  # Path to the AAB in the release folder
+          path: app/release/*.aab  # Use wildcard to catch the AAB file
+          if-no-files-found: warn
 
+  upload:
+    runs-on: ubuntu-latest
+    needs: build
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: CiCd.aab
+          path: app/release  # Download artifact to app/release
+
+      - name: List Downloaded Artifacts
+        run: ls -R app/release  # Check if the AAB file exists
+
+      - name: Upload to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
+          packageName: in.ibkart.agent
+          releaseFiles: app/release/*.aab  # Use wildcard to match the AAB file
+          track: internal
+          status: inProgress
+          inAppUpdatePriority: 2
+          userFraction: 0.33
