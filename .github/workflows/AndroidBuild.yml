@@ -2,9 +2,9 @@ name: AndroidBuild
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -31,7 +31,6 @@ jobs:
       - name: List Keystore Directory
         run: ls -R app/keystore
 
-
       - name: Clean Build
         run: ./gradlew clean
 
@@ -53,26 +52,32 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release/app-release.aab  # Adjusted path for AAB
+          path: app/build/outputs/bundle/release/app-release.aab  # Adjusted path for AAB
 
   upload:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Setup repo
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: CiCd.aab
+          path: app/release  # Ensure this matches where you want to store the artifact
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: in.ibkart.agent
-          releaseFiles: app/release/app-release.aab  # Adjusted path for the release AAB
+          releaseFiles: app/release/app-release.aab  # Ensure this path matches where the artifact was downloaded
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
-          #whatsNewDirectory: distribution/whatsnew  # Ensure this directory exists or remove this line
+          #whatsNewDirectory: distribution/whatsnew  # Uncomment if needed and directory exists
           #mappingFile: app/build/outputs/mapping/release/mapping.txt  # Adjust if needed
           #debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Adjust if needed
