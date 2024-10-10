@@ -48,11 +48,14 @@ jobs:
       - name: List Output Directory
         run: ls -R app/build/outputs/bundle/release
 
+      - name: List AAB Files
+        run: find app/build/outputs -name "*.aab"  # Find the AAB file
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/build/outputs/bundle/release/app-release.aab  # Adjusted path for AAB
+          path: app/build/outputs/bundle/release/app-release.aab  # Adjust this path based on findings
 
   upload:
     runs-on: ubuntu-latest
