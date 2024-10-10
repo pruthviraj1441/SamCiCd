@@ -45,6 +45,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleRelease
 
+      - name: List AAB Output Directory
+        run: ls -R app/build/outputs/bundle/release  # Check if the AAB file was generated
+
       - name: Create Release Directory
         run: mkdir -p app/release  # Create the directory if it doesn't exist
 
@@ -88,6 +91,3 @@ jobs:
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
-          #whatsNewDirectory: distribution/whatsnew  # Uncomment if needed and directory exists
-          #mappingFile: app/build/outputs/mapping/release/mapping.txt  # Adjust if needed
-          #debugSymbols: app/intermediates/merged_native_libs/release/out/lib  # Adjust if needed
