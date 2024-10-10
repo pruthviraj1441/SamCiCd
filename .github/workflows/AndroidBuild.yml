@@ -2,9 +2,9 @@ name: AndroidBuild
 
 on:
   pull_request:
-    branches: [main]
+    branches: [ main ]
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -37,11 +37,11 @@ jobs:
 
       - name: Increment Version Code
         run: |
-            # Increment the version code in build.gradle.kts
-            sed -i 's/versionCode = [0-9]*/versionCode = $(( $(grep 'versionCode' app/build.gradle.kts | grep -o '[0-9]*') + 1 ))/' app/build.gradle.kts
-            # Optionally update the version name
-            sed -i 's/versionName = ".*"/versionName = "V1.0.$(( $(grep 'versionCode' app/build.gradle.kts | grep -o '[0-9]*') + 1 ))"/' app/build.gradle.kts
-
+          currentVersionCode=$(grep 'versionCode' app/build.gradle.kts | grep -o '[0-9]*')
+          newVersionCode=$((currentVersionCode + 1))
+          sed -i "s/versionCode = $currentVersionCode/versionCode = $newVersionCode/" app/build.gradle.kts
+          newVersionName="V1.0.$newVersionCode"
+          sed -i "s/versionName = \".*\"/versionName = \"$newVersionName\"/" app/build.gradle.kts
 
       - name: Build with Gradle
         run: ./gradlew assembleRelease
