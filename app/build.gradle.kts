@@ -10,7 +10,7 @@ android {
         applicationId = "in.ibkart.agent"
         minSdk = 24
         targetSdk = 34
-        versionCode = 99
+        versionCode = 100
         versionName = "V2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
