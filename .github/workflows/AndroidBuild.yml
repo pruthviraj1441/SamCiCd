@@ -28,8 +28,6 @@ jobs:
           mkdir -p app/keystore
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > app/keystore/ibkart.jks
 
-      - name: List Keystore Directory
-        run: ls -R app/keystore
 
       - name: Clean Build
         run: ./gradlew clean
@@ -45,30 +43,11 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleRelease
 
-      - name: List All Output Directories
-        run: ls -R app/build/outputs  # List all output directories
-
-      - name: Create Release Directory
-        run: mkdir -p app/release  # Create the directory if it doesn't exist
-
-      - name: Move AAB to Release Directory
-        run: |
-          # Attempt to find and move the AAB file
-          if ls app/build/outputs/bundle/release/*.aab 1> /dev/null 2>&1; then
-            mv app/build/outputs/bundle/release/*.aab app/release/
-          else
-            echo "No AAB file found in the expected output directories."
-            exit 1  # Exit with error if no file is found
-          fi
-
-      - name: List Release Directory
-        run: ls -R app/release  # List the contents of the release directory
-
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release/*.aab  # Use wildcard to match the AAB file
+          path: app/release/app-release.aab
           if-no-files-found: warn
 
   upload:
@@ -83,10 +62,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: CiCd.aab
-          path: app/release  # Download artifact to app/release
-
-      - name: List Downloaded Artifacts
-        run: ls -R app/release  # Check if the AAB file exists
+          path: app/release/app-release.aab
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
