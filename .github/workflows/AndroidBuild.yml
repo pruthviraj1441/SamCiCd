@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-bundle
-          path: app/build/outputs/bundle/release/test.aab
+          path: app/release/test.aab
           if-no-files-found: warn
 
   deploy:
@@ -62,7 +62,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: app-bundle
-          path: app/build/outputs/bundle/release/test.aab
+          path: app/release/test.aab
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
