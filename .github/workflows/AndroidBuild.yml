@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-bundle
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: app/build/outputs/bundle/release/test.aab
           if-no-files-found: warn
 
   deploy:
@@ -62,14 +62,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: app-bundle
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: app/build/outputs/bundle/release/test.aab
 
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: in.ibkart.agent
-          releaseFiles: ${{ github.workspace }}/app-release.aab
+          releaseFiles: ${{ github.workspace }}/test.aab
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
