@@ -28,7 +28,6 @@ jobs:
           mkdir -p app/keystore
           echo "${{ secrets.KEYSTORE_CONTENT }}" | base64 --decode > app/keystore/ibkart.jks
 
-
       - name: Clean Build
         run: ./gradlew clean
 
@@ -41,7 +40,12 @@ jobs:
           sed -i "s/versionName = \".*\"/versionName = \"$newVersionName\"/" app/build.gradle.kts
 
       - name: Build with Gradle
-        run: ./gradlew assembleRelease
+        run: ./gradlew bundleRelease
+
+      - name: Move AAB to Desired Path
+        run: |
+          mkdir -p app/release
+          mv app/build/outputs/bundle/release/app-release.aab app/release/test.aab || echo "AAB file not found"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
@@ -69,7 +73,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_JSON }}
           packageName: in.ibkart.agent
-          releaseFiles: ${{ github.workspace }}/test.aab
+          releaseFiles: ${{ github.workspace }}/app/release/test.aab
           track: internal
           status: inProgress
           inAppUpdatePriority: 2
